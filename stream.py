@@ -73,6 +73,9 @@ def rc4_crypt(key: bytes, data: bytes) -> bytes:
     keystream = rc4_prga(s, len(data))
     return bytes(b1 ^ b2 for b1, b2 in zip(data, keystream))
 
+secret_key = b"password"
+
+
 def main():
 
     while True:
@@ -88,21 +91,28 @@ def main():
             case '1':
                 answers()
             case '2':
-                print(" RC4 Encryption/Decryption ".center(100,'-'))
+                while True:
+                    print(" RC4 Encryption/Decryption ".center(100,'-'))
 
-                message = input("Enter a message you would like to encrypt:\n")
-                key = input("Please enter a secret key: \n")
+                    message = input("Enter a message you would like to encrypt:\n")
+                    message_bytes = message.encode('utf-8')
+                    ciphertext = rc4_crypt(secret_key, message_bytes)
 
-                message_bytes = message.encode('utf-8')
-                key_bytes = key.encode('utf-8')
+                    print(f"Encrypted message in hex: {ciphertext.hex()}")
+                    print('-' * 100)
 
-                ciphertext = rc4_crypt(key_bytes, message_bytes)
+                    password = input("Please type enter the secret key to view the decrypted message:\n")
+                    password_bytes = password.encode('utf-8')
+                    decrypted_bytes = rc4_crypt(password_bytes, ciphertext)
+                    decrypted_message = decrypted_bytes.decode('utf-8', errors='replace')
 
-                decrypted_bytes = rc4_crypt(key_bytes, ciphertext)
+                    if password == secret_key.decode('utf-8'):
+                        print(f"Success! Decrypted Message: {decrypted_message}")
+                    else:
+                        print("Access Denied: Incorrect secret key entered.")
 
-                print(f"Encrypted message in hex: {ciphertext.hex()}")
-                print(f"Decrypted message: {decrypted_bytes.decode('utf-8')}")
-                input("Press any key to continue...")
+                    input("Press any key to continue...")
+                    break
 
             case '3':
                 print("Exiting Program...")
