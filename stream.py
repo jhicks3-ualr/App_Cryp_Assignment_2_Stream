@@ -1,6 +1,6 @@
 import textwrap
 
-
+##function for the first menu that creates the dictionary for the vocabulary and answers the security scheme questions
 def answers():
     definitions = {
         "Security Parameter": "A way of measuring how hard it is for an adversary to break a Cryptographic Scheme.",
@@ -10,7 +10,7 @@ def answers():
     }
 
     scheme = "A Security Scheme is secure if the probability of a successful attack is negligable, meaning that the success chance is less than 1/p(n)."
-
+##while loop that allows the user to view the above variables and then exit the loop
     while True:
         print("Please select from the below menu: ")
         select_1 = input("1. View vocabulary definitions. \n" \
@@ -34,13 +34,11 @@ def answers():
                 for line in wrapping_2:
                     print(line)
                 input("Press any key to continue...")
-
             case '3':
                 return
-
             case _:
                 print("Invalid input, please enter 1, 2, or 3.\n")
-
+##this is the key scheduling algorith, it loops 256 times to scramble the key
 def rc4_init(key: bytes):
     s = list(range(256))
     j = 0
@@ -49,9 +47,8 @@ def rc4_init(key: bytes):
     for i in range(256):
         j = (j + s[i] + key[i % key_length]) % 256
         s[i], s[j] = s[j], s[i]
-
     return s
-
+##this is the rc4 pseudo random number generator for that scrambles the users message
 def rc4_prga(s: list, data_length: int):
     i = 0
     j = 0
@@ -67,15 +64,16 @@ def rc4_prga(s: list, data_length: int):
         keystream.append(s[t])
 
     return keystream
-
+##this is the rc4 encryption engine that uses the rc4_prga and rc4_init to encrypt the data
 def rc4_crypt(key: bytes, data: bytes) -> bytes:
     s = rc4_init(key)
     keystream = rc4_prga(s, len(data))
     return bytes(b1 ^ b2 for b1, b2 in zip(data, keystream))
 
+#secret key to be used to view the decrypted message
 secret_key = b"password"
 
-
+#main function that sets up the main menu for the answers() function and the encryption then decryption of the message.
 def main():
 
     while True:
@@ -87,7 +85,6 @@ def main():
         "Input: ")
 
         match selection:
-
             case '1':
                 answers()
             case '2':
